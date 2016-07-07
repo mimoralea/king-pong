@@ -1,0 +1,4 @@
+model_checkpoint_path: "network-300000"
+all_model_checkpoint_paths: "network-100000"
+all_model_checkpoint_paths: "network-200000"
+all_model_checkpoint_paths: "network-300000"

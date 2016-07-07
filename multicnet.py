@@ -9,11 +9,11 @@ class MultilayerConvolutionalNetwork:
     that will be used by the agent to learn
     and extrapolate the state space
     """
-    def __init__(self, input_width, input_height, nchannels, noutputs):
+    def __init__(self, input_width, input_height, nimages, noutputs):
         self.session = tf.InteractiveSession()
         self.input_width = input_width
         self.input_height = input_height
-        self.nchannels = nchannels
+        self.nimages = nimages
         self.noutputs = noutputs
         self.a = tf.placeholder("float", [None, self.noutputs])
         self.y = tf.placeholder("float", [None])
@@ -75,12 +75,12 @@ class MultilayerConvolutionalNetwork:
         """
 
         # the input is going to be reshaped to a
-        # 80x80 greyscale image (1 channel)
+        # 80x80 color image (4 channels)
         input_image = tf.placeholder("float", [None, self.input_width,
-                                      self.input_height, self.nchannels])
+                                      self.input_height, self.nimages])
 
         # create the first convolutional layers
-        h_pool1 = self.convolve_relu_pool(input_image, [8, 8, self.nchannels, 32])
+        h_pool1 = self.convolve_relu_pool(input_image, [8, 8, self.nimages, 32])
         h_conv2 = self.convolve_relu_pool(h_pool1, [4, 4, 32, 64], 2, False)
         h_conv3 = self.convolve_relu_pool(h_conv2, [3, 3, 64, 64], 1, False)
 
@@ -95,15 +95,19 @@ class MultilayerConvolutionalNetwork:
 
         readout_action = tf.reduce_sum(tf.mul(readout, self.a), reduction_indices=1)
         cost_function = tf.reduce_mean(tf.square(self.y - readout_action))
-        train_step = tf.train.AdamOptimizer(1e-4).minimize(cost_function)
+        train_step = tf.train.AdamOptimizer(1e-10).minimize(cost_function)
 
         return input_image, readout, h_fc1, train_step
 
-    def train(self, lesson_dict):
+    def train(self, value_batch, action_batch, next_state_batch):
         """
         Does the actual training step
         """
-        self.train_step.run(feed_dict = lesson_dict)
+        self.train_step.run(feed_dict = {
+            self.y : value_batch,
+            self.a : action_batch,
+            self.input_image : next_state_batch
+        })
 
     def save_variables(self, a_file, h_file, stack):
         """
@@ -145,7 +149,7 @@ class MultilayerConvolutionalNetwork:
         remove any color whatsoever. Also gets it in
         3 dimensions if needed
         """
-        x_t1 = cv2.cvtColor(cv2.resize(x_t1_colored, (80, 80)), cv2.COLOR_BGR2GRAY)
+        x_t1 = cv2.cvtColor(cv2.resize(x_t1_colored, (self.input_width, self.input_height)), cv2.COLOR_BGR2GRAY)
         ret, x_t1 = cv2.threshold(x_t1, 1, 255, cv2.THRESH_BINARY)
         if not reshape:
             return x_t1
@@ -156,7 +160,7 @@ class MultilayerConvolutionalNetwork:
         Gets the best action
         for a given stack of images
         """
-        stack = np.expand_dims(stack, axis=0) if len(stack.shape) == 3 else stack
+        stack = [stack] if hasattr(stack, 'shape') and len(stack.shape) == 3 else stack
         return self.y_conv.eval(feed_dict = {self.input_image: stack})
 
     def select_best_action(self, stack):
@@ -164,12 +168,6 @@ class MultilayerConvolutionalNetwork:
         Selects the action with the
         highest value
         """
-        #print
-        #print('stack')
-        #print stack.shape
-        readout = self.readout_act(stack)
-        #print('readout')
-        #print readout
         return np.argmax(self.readout_act(stack))
 
 

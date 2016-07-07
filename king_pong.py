@@ -1,16 +1,13 @@
+#!/usr/bin/python
 from __future__ import division
 import numpy as np
-import sys
 import random
 import pygame
-import pygame.surfarray as surfarray
-from pygame.locals import *
-from itertools import cycle
 from shapely.geometry import LineString
 
 # pyGame initialization
 FPS = 60
-QFPS = 120
+QFPS = 240
 SCREEN_WIDTH, SCREEN_HEIGHT = 640, 480
 pygame.init()
 FPS_CLOCK = pygame.time.Clock()
@@ -24,7 +21,9 @@ GAMES_FONT = pygame.font.Font(None, 16)
 PADDLE_WIDTH, PADDLE_HEIGHT = 8, 64
 PADDLE_UPPER_SECTION = 3*PADDLE_HEIGHT/8
 PADDLE_BOTTOM_SECTION = 5*PADDLE_HEIGHT/8
-PADDLE_SPEED = 3
+
+TOP_SPEED = 5
+PADDLE_SPEED = TOP_SPEED
 PADDLE_X_DISTANCE, PADDLE_Y_DISTANCE = 16, int(SCREEN_HEIGHT/2)
 
 # Ball
@@ -40,10 +39,21 @@ class GameState:
         """
         def __init__(self, auto_draw = True):
                 self.auto_draw = auto_draw
+                self.top_speed = TOP_SPEED
                 self.reset_positions()
-                self.first_to = [100, 5]
+                self.first_to = [1000, 5]
                 self.games = [0, 0]
                 self.score = [0, 0]
+                self.score_changed = False
+
+        def score_last_changed(self):
+                """
+                Checks if the scores has changed since
+                the last time this function was accessed
+                """
+                current = self.score_changed
+                self.score_changed = False
+                return current
 
         def game_over(self):
                 """
@@ -62,8 +72,12 @@ class GameState:
                 self.playerx, self.playery = SCREEN_WIDTH-PADDLE_X_DISTANCE, PADDLE_Y_DISTANCE
                 self.cpux, self.cpuy = PADDLE_X_DISTANCE, PADDLE_Y_DISTANCE
                 self.ballx, self.bally = SCREEN_WIDTH/2, SCREEN_HEIGHT/2
-                self.ball_speed_x = random.choice(range(-3, -1) + range(2, 4))
-                self.ball_speed_y = random.choice(range(-3, -1) + range(2, 4))
+                self.ball_speed_x = random.choice(
+                        range(-self.top_speed+1, -int(2*self.top_speed/3)) +
+                        range(int(2*self.top_speed/3), self.top_speed))
+                self.ball_speed_y = random.choice(
+                        range(-self.top_speed+1, -int(2*self.top_speed/3)) +
+                        range(int(2*self.top_speed/3), self.top_speed))
 
         def frame_step(self, input_actions):
                 """
@@ -85,18 +99,18 @@ class GameState:
                 if input_actions[1] == 1:
                         # player moves up
                         self.playery = np.maximum(0,
-                                                  self.playery - PADDLE_SPEED)
+                                                  self.playery - self.top_speed)
                 elif input_actions[2] == 1:
                         # player moves down
-                        self.playery = np.minimum(self.playery + PADDLE_SPEED,
+                        self.playery = np.minimum(self.playery + self.top_speed,
                                                   SCREEN_HEIGHT - PADDLE_HEIGHT)
 
                 # move cpu
                 if self.cpuy + (PADDLE_HEIGHT/2) > self.bally:
                     self.cpuy = np.maximum(0,
-                                           self.cpuy - PADDLE_SPEED)
+                                           self.cpuy - self.top_speed)
                 elif self.cpuy + (PADDLE_HEIGHT/2) < self.bally:
-                    self.cpuy = np.minimum(self.cpuy + PADDLE_SPEED,
+                    self.cpuy = np.minimum(self.cpuy + self.top_speed,
                                            SCREEN_HEIGHT - PADDLE_HEIGHT)
 
                 # move ball get reward the it produced
@@ -129,17 +143,15 @@ class GameState:
                 image_data = pygame.surfarray.array3d(pygame.display.get_surface())
                 if self.auto_draw: self.complete_drawing()
 
+                if terminal: self.score_changed = True
+
                 # calculate who would be the winner
                 if self.score[0] == self.first_to[1]:
-                    print('Left player won', self.score)
                     self.score = [0, 0]
                     self.games[0] += 1
-                    print('Games', self.games)
                 elif self.score[1] == self.first_to[1]:
-                    print('Right player won', self.score)
                     self.score = [0, 0]
                     self.games[1] += 1
-                    print('Games', self.games)
                 return image_data, reward
 
         def move_ball(self):
@@ -164,9 +176,9 @@ class GameState:
                                          (SCREEN_WIDTH, 0)])
                 bottom_wall = LineString([(0, SCREEN_HEIGHT - BALL_SIZE),
                                           (SCREEN_WIDTH, SCREEN_HEIGHT - BALL_SIZE)])
-                left_paddle = LineString([(self.cpux + PADDLE_WIDTH, self.cpuy),
+                left_paddle = LineString([(self.cpux + PADDLE_WIDTH, self.cpuy - BALL_SIZE),
                                           (self.cpux + PADDLE_WIDTH, self.cpuy + PADDLE_HEIGHT)])
-                right_paddle = LineString([(self.playerx - BALL_SIZE, self.playery),
+                right_paddle = LineString([(self.playerx - BALL_SIZE, self.playery - BALL_SIZE),
                                            (self.playerx - BALL_SIZE, self.playery + PADDLE_HEIGHT)])
 
                 # chop ball trajectory when colliding
@@ -258,6 +270,7 @@ def main(argv):
 
         # 2 game_states of 1 point
         game_state.first_to = [3, 2]
+        game_state.top_speed = 5
 
         while True:
                 for event in pygame.event.get():
