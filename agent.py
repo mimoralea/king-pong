@@ -49,7 +49,7 @@ class DeepLearningAgent:
         self.save_interval = 100000
         self.nactions = nactions
         self.gamma = 0.99
-        self.observe = float('inf') if self.train else int(self.memory_max_len * 1.25)
+        self.observe = int(self.memory_max_len * 1.25)
         self.initial_epsilon = 0.60 if self.train else 0.00
         self.final_epsilon = 0.01 if self.train else 0.00
         self.epsilon = self.initial_epsilon
