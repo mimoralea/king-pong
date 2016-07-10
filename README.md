@@ -182,3 +182,13 @@ python king_pong.py
 ```
 
 In the future we will add a switch and code to allow a human to play an agent, and other agents to play eachother.
+
+
+## References
+
+The following resources were particularly useful for the completion of this project:
+
+- [Deep Learning Flappy](https://github.com/yenchenlin/DeepLearningFlappyBird)
+- [Deep Learning Tutorial](https://www.nervanasys.com/demystifying-deep-reinforcement-learning/)
+- [Pong PyGame](https://www.youtube.com/watch?v=x_tPvtyB1fY)
+- [Udacity's Reinforcement Learning Course](https://www.udacity.com/course/reinforcement-learning--ud600)
