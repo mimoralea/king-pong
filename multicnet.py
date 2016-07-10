@@ -95,7 +95,7 @@ class MultilayerConvolutionalNetwork:
 
         readout_action = tf.reduce_sum(tf.mul(readout, self.a), reduction_indices=1)
         cost_function = tf.reduce_mean(tf.square(self.y - readout_action))
-        train_step = tf.train.AdamOptimizer(1e-10).minimize(cost_function)
+        train_step = tf.train.AdamOptimizer(1e-8).minimize(cost_function)
 
         return input_image, readout, h_fc1, train_step
 
