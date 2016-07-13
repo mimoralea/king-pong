@@ -1,20 +1,25 @@
 # King Pong
 ### Deep Reinforcement Learning Pong Player
 
-![alt text][king]
+![King Pong][king]
 
 ## Overview
 In this repository, you have an agent that plays the game of pong. Make no mistake though, this is not a normal player. King (the agent) has learned to play the game of pong all by himself, by looking at the screen just like you would. Now, as you can imagine, there are a lot of cutting edge technologies being mixed into this project. First, we have Computer Vision to be able to receive the percepts from the screen. Next, we have Reinforcement Learning which is part of Machine Learning, but it is not classification, nor regression, or clustering.
 
 
 ### What is Reinforcement Learning?
+![Reinforcement Learning][rl]
+ 
 [Reinforcement Learning](https://en.wikipedia.org/wiki/Reinforcement_learning) is inspired by the study of animal behavior. In specific, how animals react to pain, reward signals through time. King wants to win, that's why he learns to do what he does.
 
 ### What is Deep Learning?
+![Deep Learning][dl]
+
 The problem with Reinforcement Learning comes when the number of states in which the environment could present itself is too large. Think about it, if you see some pointy object approaching your hand, you might immediately protect it. Even if you have never been hurt by exactly the same object. This ability that you have to extrapolate states is "Deep Learning" in your brain. [Deep Learning](https://en.wikipedia.org/wiki/Deep_learning) is a part of Machine Learning that specializes on function approximation. In the case of King, we are using Deep Learning so percepts that have never been seen (think pointy object) still get treated with the same regard as similar percepts would (move your hand out of the way.)
 
 
-## What is Deep Reinforcement Learning?
+### What is Deep Reinforcement Learning?
+![Deep Reinforcement Learning][drl]
 Deep Reinforcement Learning is the combination of these two techniques to make a stronger learning approach. An amazing blog post that helped me tremendously is called [Demystifying Deep Reinforcement Learning](https://www.nervanasys.com/demystifying-deep-reinforcement-learning/) by Tambet Matiisen.
 
 
@@ -178,3 +183,6 @@ The following resources were particularly useful for the completion of this proj
 - [Udacity's Reinforcement Learning Course](https://www.udacity.com/course/reinforcement-learning--ud600)
 
 [king]: ./imgs/king.gif "King Pong Game"
+[rl]: ./imgs/rl.png "Reinforcement Learning"
+[dl]: ./imgs/dl.png "Deep Learning"
+[drl]: ./imgs/drl.png "Deep Reinforcement Learning"
