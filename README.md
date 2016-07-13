@@ -2,12 +2,18 @@
 ### Deep Reinforcement Learning Pong Player
 
 ## Overview
+In this repository, you have an agent that plays the game of pong. Make no mistake though, this is not a normal player. King (the agent) has learned to play the game of pong all by himself, by looking at the screen just like you would. Now, as you can imagine, there are a lot of cutting edge technologies being mixed into this project. First, we have Computer Vision to be able to receive the percepts from the screen. Next, we have Reinforcement Learning which is part of Machine Learning, but it is not classification, nor regression, or clustering.
 
-## What is Deep Reinforcement Learning?
-
-### What is Deep Learning?
 
 ### What is Reinforcement Learning?
+[Reinforcement Learning](https://en.wikipedia.org/wiki/Reinforcement_learning) is inspired by the study of animal behavior. In specific, how animals react to pain, reward signals through time. King wants to win, that's why he learns to do what he does.
+
+### What is Deep Learning?
+The problem with Reinforcement Learning comes when the number of states in which the environment could present itself is too large. Think about it, if you see some pointy object approaching your hand, you might immediately protect it. Even if you have never been hurt by exactly the same object. This ability that you have to extrapolate states is "Deep Learning" in your brain. [Deep Learning](https://en.wikipedia.org/wiki/Deep_learning) is a part of Machine Learning that specializes on function approximation. In the case of King, we are using Deep Learning so percepts that have never been seen (think pointy object) still get treated with the same regard as similar percepts would (move your hand out of the way.)
+
+
+## What is Deep Reinforcement Learning?
+Deep Reinforcement Learning is the combination of these two techniques to make a stronger learning approach. An amazing blog post that helped me tremendously is called [Demystifying Deep Reinforcement Learning](https://www.nervanasys.com/demystifying-deep-reinforcement-learning/) by Tambet Matiisen.
 
 
 ## Installation
@@ -153,6 +159,9 @@ One idea for training the Deep Network is to allow the agent to train by priorit
    - From this new distribution, select frames probabilisticaly with replacement.
    - Recollect aproximatelly 100 frames per dream. About 50 before the recollected frame, about 50 after.
    - Replay longer batches but fewer times.
+
+### Train the same agent for other games?
+The Agent is a very generic class that basically takes inputs and select outputs based on those inputs. One great add to this codebase would be to make the agent so generic such that it could learn to play other games.
 
 ## More Information
 
