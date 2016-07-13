@@ -8,20 +8,19 @@ In this repository, you have an agent that plays the game of pong. Make no mista
 
 
 ### What is Reinforcement Learning?
-![Reinforcement Learning][rl]
- 
 [Reinforcement Learning](https://en.wikipedia.org/wiki/Reinforcement_learning) is inspired by the study of animal behavior. In specific, how animals react to pain, reward signals through time. King wants to win, that's why he learns to do what he does.
 
-### What is Deep Learning?
-![Deep Learning][dl]
+![Reinforcement Learning][rl]
 
+### What is Deep Learning?
 The problem with Reinforcement Learning comes when the number of states in which the environment could present itself is too large. Think about it, if you see some pointy object approaching your hand, you might immediately protect it. Even if you have never been hurt by exactly the same object. This ability that you have to extrapolate states is "Deep Learning" in your brain. [Deep Learning](https://en.wikipedia.org/wiki/Deep_learning) is a part of Machine Learning that specializes on function approximation. In the case of King, we are using Deep Learning so percepts that have never been seen (think pointy object) still get treated with the same regard as similar percepts would (move your hand out of the way.)
 
+![Deep Learning][dl]
 
 ### What is Deep Reinforcement Learning?
-![Deep Reinforcement Learning][drl]
 Deep Reinforcement Learning is the combination of these two techniques to make a stronger learning approach. An amazing blog post that helped me tremendously is called [Demystifying Deep Reinforcement Learning](https://www.nervanasys.com/demystifying-deep-reinforcement-learning/) by Tambet Matiisen.
 
+![Deep Reinforcement Learning][drl]
 
 ## Installation
 
@@ -73,7 +72,7 @@ docker run --privileged=true --rm \
     -it mimoralea/king:v1 /bin/bash
 ```
 
-This command redirects the X11 session to your local computer as well as it maps the local directory with the source code to the `/king` directory in the container.
+This command redirects the X11 session to your local computer. You need this so that Pygame can open the window in your local system. This command also maps the local current directory `.` containing the source code to the `/king` directory in the container.
 
 ### Run the app:
 
