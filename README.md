@@ -1,6 +1,8 @@
 # King Pong
 ### Deep Reinforcement Learning Pong Player
 
+![alt text][king]
+
 ## Overview
 In this repository, you have an agent that plays the game of pong. Make no mistake though, this is not a normal player. King (the agent) has learned to play the game of pong all by himself, by looking at the screen just like you would. Now, as you can imagine, there are a lot of cutting edge technologies being mixed into this project. First, we have Computer Vision to be able to receive the percepts from the screen. Next, we have Reinforcement Learning which is part of Machine Learning, but it is not classification, nor regression, or clustering.
 
@@ -174,3 +176,5 @@ The following resources were particularly useful for the completion of this proj
 - [Deep Learning Tutorial](https://www.nervanasys.com/demystifying-deep-reinforcement-learning/)
 - [Pong PyGame](https://www.youtube.com/watch?v=x_tPvtyB1fY)
 - [Udacity's Reinforcement Learning Course](https://www.udacity.com/course/reinforcement-learning--ud600)
+
+[king]: ./imgs/king.gif "King Pong Game"
