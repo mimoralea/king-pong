@@ -69,19 +69,20 @@ This command can take a little while, but it will build a Fedora image and insta
 docker run --privileged=true --rm \
     -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix \
     -v $PWD:/king-pong \
-    -it mimoralea/king:v1 /bin/bash
+    -it mimoralea/king-pong:v1 /bin/bash
 ```
 
-This command redirects the X11 session to your local computer. You need this so that Pygame can open the window in your local system. This command also maps the local current directory `.` containing the source code to the `/king` directory in the container.
+This command redirects the X11 session to your local computer. You need this so that Pygame can open the window in your local system. This command also maps the local current directory `.` containing the source code to the `/king` directory in the container. So please make sure that you are inside the project's root directory.
 
 ### Run the app:
 
+If you used the Docker method you need to get into the `king-pong` directory first. `cd king-pong`. If you installed the pages locally, the `agent.py` file should be in your current directory. To run the application run from the project's root directory:
+
 ```
-cd king-pong/
-python agent.py -vv
+python agent.py -vv -g 1 -m 3
 ```
 
-The Pygame window should get redirected to you screen. This worked seamlessly on my Fedora environment, let me know if there is are different steps on other OS.
+This will start a quick 3 points game.
 
 ## Commands available:
 
@@ -168,6 +169,9 @@ One idea for training the Deep Network is to allow the agent to train by priorit
 
 ### Train the same agent for other games?
 The Agent is a very generic class that basically takes inputs and select outputs based on those inputs. One great add to this codebase would be to make the agent so generic such that it could learn to play other games.
+
+### Shouldn't we add some tests?
+Just as a good practice some functions would be best if tested.
 
 ## More Information
 
