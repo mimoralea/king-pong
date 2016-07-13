@@ -1,6 +1,5 @@
-
-# Capstone Project
-## Machine Learning Engineer Nanodegree
+# King Pong
+### Deep Reinforcement Learning Agent
 
 ## Definition
 ### Project Overview

@@ -35,7 +35,6 @@ sudo dnf install opencv opencv-python
 
 ## References
 The following resources were particularly useful for the completion of this project:
-
 - [Deep Learning Flappy](https://github.com/yenchenlin/DeepLearningFlappyBird)
 - [Deep Learning Tutorial](https://www.nervanasys.com/demystifying-deep-reinforcement-learning/)
 - [Pong PyGame](https://www.youtube.com/watch?v=x_tPvtyB1fY)
