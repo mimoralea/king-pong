@@ -26,6 +26,7 @@ class DeepLearningAgent:
         self.train = train
         self.memory = deque()
         self.environment = env.GameState()
+        self.environment.print_scores = not train
         self.step = 0
         self.perception = percept.MultilayerConvolutionalNetwork(
             input_width, input_height, nimages, nactions)
@@ -336,6 +337,21 @@ if __name__ == '__main__':
              'NOTE: if you enable training, this variable will not be used',
         dest='ngames', type=int, default=100,
     )
+    # TODO: Enable players to be set left or right
+    """
+    parser.add_argument(
+        '-l', '--left-player',
+        help='agent to play on left. (default: CPU) '
+             'OPTIONS: CPU, AGENT, HUMAN',
+        dest='lplayer', type=str, default='CPU',
+    )
+    parser.add_argument(
+        '-r', '--right-player',
+        help='agent to play on left. (default: AGENT) '
+             'OPTIONS: CPU, AGENT, HUMAN',
+        dest='rplayer', type=str, default='AGENT',
+    )
+    """
     parser.add_argument(
         '-m', '--matches',
         help='number of matches for each game. (default: 5) '
@@ -348,7 +364,7 @@ if __name__ == '__main__':
              'NOTE: leave disabled to only see the current agent behave',
         dest='train', action='store_true')
     parser.add_argument(
-        '-r', '--reset',
+        '-c', '--clear',
         help='clears the folders where the state of the agent is saves. '
              'NOTE: use this to retrain the agent from scratch',
         dest='reset', action='store_true')

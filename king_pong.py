@@ -39,6 +39,7 @@ class GameState:
         """
         def __init__(self, auto_draw = True):
                 self.auto_draw = auto_draw
+                self.print_scores = False
                 self.top_speed = TOP_SPEED
                 self.reset_positions()
                 self.first_to = [1000, 5]
@@ -236,6 +237,7 @@ class GameState:
                 """
                 Force the drawing of the screens
                 """
+                if self.print_scores: self.draw_scores()
                 pygame.display.flip()
                 if self.auto_draw: FPS_CLOCK.tick(QFPS)
                 else: FPS_CLOCK.tick(FPS)

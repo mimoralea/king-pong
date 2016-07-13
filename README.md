@@ -71,13 +71,92 @@ python agent.py -vv
 
 The Pygame window should get redirected to you screen. This worked seamlessly on my Fedora environment, let me know if there is are different steps on other OS.
 
-## Play against the CPU player?
+## Commands available:
 
-## Play against the Agent?
+```
+usage: agent.py [-h] [-v] [-vv] [-vvv] [-g NGAMES] [-m NMATCHES] [-t] [-c]
 
-## Let them play against each other
+A Deep Reinforcement Learning agent that plays pong like a King.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v                    logging level set to ERROR
+  -vv                   logging level set to INFO
+  -vvv                  logging level set to DEBUG
+  -g NGAMES, --games NGAMES
+                        number of games for the agent to play. (default: 100)
+                        NOTE: if you enable training, this variable will not
+                        be used
+  -m NMATCHES, --matches NMATCHES
+                        number of matches for each game. (default: 5) NOTE: if
+                        you enable training, this variable will not be used
+  -t, --train           allows the training of the deep neural network. NOTE:
+                        leave disabled to only see the current agent behave
+  -c, --clear           clears the folders where the state of the agent is
+                        saves. NOTE: use this to retrain the agent from
+                        scratch
+```
+
+The commands are somewhat self explanatory, but let me guide you through some common things you might want to do with this application.
+
+### Play against the CPU player?
+
+To give it a try in the game of pong just run the following command:
+
+```
+python king_pong.py
+```
+
+This will fire up the CPU player on the left and you on the right. Just use the normal UP/DOWN arrow keys.
+
+### Let them play against each other
+
+To use the trained agent against the CPU player you can use this command:
+
+```
+python agent.py -g 3 -m 2
+```
+
+This will set the CPU on the left and the agent on the right. They will play 3 games of 2 points each. If you want to see log printed to the screen just add `-vv` option which gives a good amount of info, including scores.
+
+### Continue training the agent
+
+If you want to continue improving the agent run:
+
+```
+python agent.py -t -vv
+```
+
+This will continue adjusting the weights of the neural network and saving progress every so often. The networks will be saved on `networks/` directory and the references of the network actually being utilized could be found on the `networks/checkpoint` file.
+
+### To train the agent from scratch
+
+If you'd like to try out and train the agent yourself, do:
+
+```
+python agent.py -t -c -vv
+```
+
+This will first remove all the previous networks and start the training. Beware, it takes a long time to see some good progress. Couple of days to a week with a decent GPU.
+
+## Future features
+
+### Play against the Agent?
+It would be great to be able to play against the agent. Need to:
+   - Refactor `king_pong.py` to not use cpu vs agent but a generic left vs right
+   - Create interface that Agent would base on
+   - Abstract actions of a human and cpu player
+
+### Agent can have dreams?
+One idea for training the Deep Network is to allow the agent to train by prioritized recollection of frames. For example:
+   - From the batch of frames, assign probabilities depending on absolute value of rewards.
+   - From this new distribution, select frames probabilisticaly with replacement.
+   - Recollect aproximatelly 100 frames per dream. About 50 before the recollected frame, about 50 after.
+   - Replay longer batches but fewer times.
 
 ## More Information
+
+This project was created to fulfill the Capstone project of the Udacity Nanodegree program. To read the report and have more details read [the report.](report.md)
 
 ## References
 
