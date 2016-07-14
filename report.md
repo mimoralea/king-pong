@@ -95,14 +95,15 @@ Therefore, for the input space we will implement a Deep Learning Neural Network 
 
 The first layer of the network will have 80 by 80 by 4 to be able to get the input of 4 images 80 pixels wide by 80 pixel high. Then, we connect this layer with a convolutional layer that reduces the input further to 8 by 8 by 4, and create a densely connected layer of 1600 connections into 512, and finally we connect these to a readout network with 512 inputs and 3 outputs.
 
+This network cost function will be the square mean error and we will be training the network with an Adam Optimizer which is known to be an algorithm that converges faster than the generic Gradient Descent. The reason, as explained on [this paper](http://arxiv.org/pdf/1206.5533.pdf), is the algorithm uses the momentum of the descent to speed up is course towards minima. Here is a gif from [Alec Radford](https://twitter.com/alecrad) that helps explain the main differences between Standard Gradient Descent and one with Momentum.
 
+![Gradient Descent Comparisson][gradient]
 
-This network cost function will be the square mean error and we will be training the network with an Adam Optimizer which is [known](http://arxiv.org/pdf/1206.5533.pdf) to be an algorithm that converges faster than the generic Gradient Descent.
+For the Reinforcement Learning agent, we will implement a version of the Q Learning algortihm. That is at it's core, it is just the same we implemented in Project 4, but this time, the learning of the agent will have a period in which it only collects information. That is, the agent doesn't train in order to allow it to collect several samples. After approximatelly 50,000 steps, then we allow the agent to change the networks values. Here is a pseudo-code of this algorithm as represented on [this wonderful post](https://www.nervanasys.com/demystifying-deep-reinforcement-learning/?imm_mid=0e2d7e&cmp=em-data-na-na-newsltr_20160420) by [Tambet Matiisen](https://www.nervanasys.com/author/tambet/):
 
-For the Reinforcement Learning agent, we will implement a version of the Q Learning algortihm. That is at it's core, it is just the same we implemented in Project 4, but this time, the learning of the agent will have a period in which it only collects information. That is, the agent doesn't train in order to allow it to collect several samples. After approximatelly 50,000 steps, then we allow the agent to change the networks values. 
+![Deep Q Learning Algorithm][algo]
 
-Also, we will be using an initial epsilon value of 0.6 and decaying it to about 0.01 over the course of several steps. This will allow the agent to explore random moves every time we restart training and converge to an almost optimal policy in the end.
-
+Also, we will be using an initial epsilon value of 0.6 and decaying it to about 0.01 over the course of several steps. This will allow the agent to explore random moves every time we restart training and converge to an almost optimal policy in the end. There was no specific methodology on picking these values though some common sense and intuition that we need to make the agent take enough random actions to even get a chance of hitting the ball once. And as suggested on [this David Silver's lecture](http://videolectures.net/rldm2015_silver_reinforcement_learning/), we selected not to decay the epsilon to zero, but instead always keep some space for very small randomness.
 
 ### Benchmark
 
@@ -122,13 +123,39 @@ There were several steps that we took in order to make this work. The Deep Netwo
 
 ### Data Preprocessing
 
-As discussed above, the data wasn't preprocessed once, but the implementation includes a preprocessing routine that does the job continuously. Again, from a 640x480x3 read of the screen down to a stack of 4 x 80x80 grayscale images.
+As discussed above, the data wasn't preprocessed once, but the implementation includes a preprocessing routine that does the job continuously. Again, from a 640x480x3 read of the screen down to a stack of 4 x 80x80 grayscale images. Here is a code snippet of how this is done:
 
-In addition to that, the scoreboard that can be seen on the version of the game for humans had to be removed in the agent version. This is because the score creates some noise in the data that might not be worth looking at. For example, going down to reach the ball has very little to do with the score going 3-2, we still want the agent to go for the point.
+To get the image array from Pygame we use:
+
+```
+color_img = pygame.surfarray.array3d(pygame.display.get_surface())
+```
+
+The [`get_surface()`](http://www.pygame.org/docs/ref/display.html#pygame.display.get_surface) method returns a reference to the currently set display Surface. The [`array3d()`](http://www.pygame.org/docs/ref/surfarray.html#pygame.surfarray.array3d) method returns a 3d array of the pixels. So at this point we have an array with height, width and channels with the values for each. One caveat we noticed is that the these methods return the array on a 90 degree rotation by default, though it doesn't represent a challenge to the Deep Neural Network since for it, it's consistent to what is sees. If we were to change the rotation of the image, the Network would have to be retrained to learn the new percepts.
+
+After reading these values into a 3d array we preprocess the image to shrink it down to 80x80x3, then collapse the 3 channels to 1, finally clipping the values to 0 or 1:
+
+```
+resized_img = cv2.resize(color_img, (80, 80))
+greyscale_img = cv2.cvtColor(resized_img, cv2.COLOR_BGR2GRAY)
+_, binary_img = cv2.threshold(greyscale_img, 1, 255, cv2.THRESH_BINARY)
+```
+
+The last step, we stack up the new image to the input stack which we use to train and query our Deep Network, this code shows how that gets done:
+
+```
+img_stack = np.append(binary_img, img_stack[:, :, :3], axis=2)
+```
+
+This basically appends the new frame into a subset of the current stack. Exactly, the first 3 images are kept and the new image occupies the place of the last.
+
+In addition to all this pre processing, the scoreboard that can be seen on the version of the game for humans, and when the agent is [not in `training` mode](README.md#commands-available) has to be removed in the training version for better training time and results. This is because the score creates some noise in the data that is not worth looking at. For example, going down to reach the ball has very little to do with the score going 3-2, we still want the agent to go for the point.
 
 ### Implementation
 
 The implementation took several weeks, and we found immense help with previous solutions to similar problems, as well as prominent papers, documentation and tutorials on the diverse technologies we had to merge. For the deep neural network the Udacity course and tutorials were helpful, and for the reinforcement learner the Reinforcement Learning class and a previous implementation of a similar agent [FlappyBird](https://github.com/yenchenlin/DeepLearningFlappyBird). Also, for the actual game of Pong we started with an implementation found on the web, but quickly noticed that we had to rewrite the most of it, so it was done.
+
+Initially we look for a [current Pong implementation](https://www.youtube.com/watch?v=x_tPvtyB1fY) to study how the Pygame framework works. Then we look at some [other sample implementations](http://pygame.org/tags/pong). After grasping the basic Pygame concepts we took in the challenge of implemented our own version. Mostly because we wanted to be able to play against the CPU player, as well as programatically move one frame at a time at the speed the agent needed to learn.
 
 ### Refinement
 
@@ -193,36 +220,6 @@ For a next iteration of this agent, we will be implementing a more complex learn
 Lastly, training time, which with a Nanodegree rolling could be expensive. We will, however, further improve the agent and make its latest version available on [GitHub](https://www.github.com/mimoralea/king-pong.git) soon.
 
 
-## About running the program
-
-### Installing dependencies
-
-At least the following dependencies were installed to complete this project:
-
-- pygame
-- tensorflow
-- opencv2
-- shapely
-- numpy
-
-Use your preferred method for installing these.
-
-### Running the scripts
-
-For more information about the scripts, please run the help on the agent.py:
-
-```
-python agent.py -h
-```
-
-And if you want to play against the CPU just, as mentioned above, run:
-
-```
-python king_pong.py
-```
-
-In the future we will add a switch and code to allow a human to play an agent, and other agents to play eachother.
-
 
 [king]: ./imgs/king.png "King Pong Game"
 [color]: ./imgs/1468456955-color.png "Color King"
@@ -235,3 +232,6 @@ In the future we will add a switch and code to allow a human to play an agent, a
 [p3]: ./imgs/1468456953-bandw.png "Frame 3"
 [p4]: ./imgs/1468456952-bandw.png "Frame 4"
 [p5]: ./imgs/1468456951-bandw.png "Frame 5"
+
+[gradient] ./imgs/gradient.gif "Gradient Descent Comparisson"
+[algo] ./imgs/dqn-algo.png "Deep Q-Learning Algorithm"
