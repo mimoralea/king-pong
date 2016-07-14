@@ -38,7 +38,7 @@ The following dependencies have to be installed before running the code:
 
 For example in Fedora, the following command would do just fine:
 
-```
+```bash
 sudo dnf install opencv-python
 ```
 
@@ -48,7 +48,7 @@ To make things a little easier, I have created a Docker image that will hopefull
 
 #### To pull execute:
 
-```
+```bash
 docker pull mimoralea/king-pong:v1
 ```
 
@@ -57,7 +57,7 @@ This command will download the container with all of the dependencies installed.
 
 #### To build execute:
 
-```
+```bash
 docker build -t mimoralea/king-pong:v1 .
 ```
 
@@ -65,7 +65,7 @@ This command can take a little while, but it will build a Fedora image and insta
 
 #### To get into the container:
 
-```
+```bash
 docker run --privileged=true --rm \
     -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix \
     -v $PWD:/king-pong \
@@ -78,7 +78,7 @@ This command redirects the X11 session to your local computer. You need this so 
 
 If you used the Docker method you need to get into the `king-pong` directory first. `cd king-pong`. If you installed the pages locally, the `agent.py` file should be in your current directory. To run the application run from the project's root directory:
 
-```
+```bash
 python agent.py -vv -g 1 -m 3
 ```
 
@@ -116,7 +116,7 @@ The commands are somewhat self explanatory, but let me guide you through some co
 
 To give it a try in the game of pong just run the following command:
 
-```
+```bash
 python king_pong.py
 ```
 
@@ -126,7 +126,7 @@ This will fire up the CPU player on the left and you on the right. Just use the 
 
 To use the trained agent against the CPU player you can use this command:
 
-```
+```bash
 python agent.py -g 3 -m 2
 ```
 
@@ -136,7 +136,7 @@ This will set the CPU on the left and the agent on the right. They will play 3 g
 
 If you want to continue improving the agent run:
 
-```
+```bash
 python agent.py -t -vv
 ```
 
@@ -146,7 +146,7 @@ This will continue adjusting the weights of the neural network and saving progre
 
 If you'd like to try out and train the agent yourself, do:
 
-```
+```bash
 python agent.py -t -c -vv
 ```
 

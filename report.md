@@ -115,7 +115,7 @@ This project doesn't have an obvious benchmark. However, we will be using human 
 
 For a best of 3 games of 2 points each, run:
 
-```
+```bash
 python king_pong.py
 ```
 
@@ -123,7 +123,7 @@ I bet the CPU wins.
 
 ## Methodology
 
-There were several steps that we took in order to make this work. The Deep Network was a challenge, and the learner took a long time to show progress. In fact, we had to source a GTX 980 and install CUDA support on our server in order to iterate over our implementation fast enough.
+There were several steps in order to make this work. The Deep Network was a challenge, and the learner took a long time to show progress. In fact, we had to source a GTX 980 and install CUDA support on our server in order to iterate over our implementation fast enough.
 
 ### Data Preprocessing
 
@@ -131,7 +131,7 @@ As discussed above, the data wasn't preprocessed once, but the implementation in
 
 To get the image array from Pygame we use:
 
-```
+```python
 color_img = pygame.surfarray.array3d(pygame.display.get_surface())
 ```
 
@@ -139,7 +139,7 @@ The [`get_surface()`](http://www.pygame.org/docs/ref/display.html#pygame.display
 
 After reading these values into a 3d array we preprocess the image to shrink it down to 80x80x3, then collapse the 3 channels to 1, finally clipping the values to 0 or 1:
 
-```
+```python
 resized_img = cv2.resize(color_img, (80, 80))
 greyscale_img = cv2.cvtColor(resized_img, cv2.COLOR_BGR2GRAY)
 _, binary_img = cv2.threshold(greyscale_img, 1, 255, cv2.THRESH_BINARY)
@@ -147,7 +147,7 @@ _, binary_img = cv2.threshold(greyscale_img, 1, 255, cv2.THRESH_BINARY)
 
 The last step, we stack up the new image to the input stack which we use to train and query our Deep Network, this code shows how that gets done:
 
-```
+```python
 img_stack = np.append(binary_img, img_stack[:, :, :3], axis=2)
 ```
 
@@ -174,7 +174,7 @@ The results of this project are remarkable. Not only the agent was able to beat 
 
 For an observation of our results, please, enjoy the agent on a 3 points per game 10 games match up against the CPU player.
 
-```
+```bash
 python agent.py -g 10 -m 3 -vv
 ```
 
