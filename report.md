@@ -53,7 +53,7 @@ Next, the image gets resized to a 80x80x3:
 
 Then, the color channels get reduced to grayscale:
 
-![Grayscale King][grayscale]
+![Greyscale King][greyscale]
 
 Then, the image gets thresholded to black and white values:
 
@@ -206,8 +206,9 @@ In the future we will add a switch and code to allow a human to play an agent, a
 [color]: ./imgs/1468455523-color.png "Color King"
 [reduced]: ./imgs/1468455523-resized.png "Resized King"
 [greyscale]: ./imgs/1468455523-greyscale.png "Grey King"
-[binary]: ./imgs/1468455523-binary.png "Binary King"
-[p1]: ./imgs/1468455523-binary.png "Frame 1"
-[p2]: ./imgs/1468455522-binary.png "Frame 2"
-[p3]: ./imgs/1468455521-binary.png "Frame 3"
-[p4]: ./imgs/1468455520-binary.png "Frame 4"
+[binary]: ./imgs/1468455523-bandw.png "Binary King"
+
+[p1]: ./imgs/1468455523-bandw.png "Frame 1"
+[p2]: ./imgs/1468455522-bandw.png "Frame 2"
+[p3]: ./imgs/1468455521-bandw.png "Frame 3"
+[p4]: ./imgs/1468455520-bandw.png "Frame 4"
