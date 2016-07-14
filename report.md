@@ -99,6 +99,10 @@ This network cost function will be the square mean error and we will be training
 
 ![Gradient Descent Comparisson][gradient]
 
+![Gradient Descent Comparisson 2][gradient2]
+
+I highly recomment you read over [this post](http://cs231n.github.io/neural-networks-3/) for a more in-depth comparison of the different Gradient Descent method variations, but allow me to breifly explain what you see on the pictures above. First, you can see how the GD algorithms with Momentum tend to "speed-up" when the surface has high inclination. Though, this creates some overshooting effect, it is vital to speed up the algorithm. This speed-up is due to the inclusion of momentum which standard GD doesn't have and it is main reason why the loss update shows half way the trajectory while the others had already converged.
+
 For the Reinforcement Learning agent, we will implement a version of the Q Learning algortihm. That is at it's core, it is just the same we implemented in Project 4, but this time, the learning of the agent will have a period in which it only collects information. That is, the agent doesn't train in order to allow it to collect several samples. After approximatelly 50,000 steps, then we allow the agent to change the networks values. Here is a pseudo-code of this algorithm as represented on [this wonderful post](https://www.nervanasys.com/demystifying-deep-reinforcement-learning/?imm_mid=0e2d7e&cmp=em-data-na-na-newsltr_20160420) by [Tambet Matiisen](https://www.nervanasys.com/author/tambet/):
 
 ![Deep Q Learning Algorithm][algo]
@@ -234,4 +238,5 @@ Lastly, training time, which with a Nanodegree rolling could be expensive. We wi
 [p5]: ./imgs/1468456951-bandw.png "Frame 5"
 
 [gradient]: ./imgs/gradient.gif "Gradient Descent Comparisson"
+[gradient2]: ./imgs/gradient2.gif "Gradient Descent Comparisson 2"
 [algo]: ./imgs/dqn-algo.png "Deep Q-Learning Algorithm"
