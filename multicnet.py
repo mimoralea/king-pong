@@ -2,7 +2,6 @@ import tensorflow as tf
 import cv2
 import numpy as np
 
-
 class MultilayerConvolutionalNetwork:
     """
     This class manages the deep neural network
@@ -124,7 +123,7 @@ class MultilayerConvolutionalNetwork:
         Saves an image array to visualize
         how the image is compressed before saving
         """
-        cv2.imwrite(path, x_t1)
+        cv2.imwrite(path, np.rot90(x_t1))
 
     def save_network(self, directory, iteration):
         """
@@ -149,8 +148,21 @@ class MultilayerConvolutionalNetwork:
         remove any color whatsoever. Also gets it in
         3 dimensions if needed
         """
-        x_t1 = cv2.cvtColor(cv2.resize(x_t1_colored, (self.input_width, self.input_height)), cv2.COLOR_BGR2GRAY)
-        ret, x_t1 = cv2.threshold(x_t1, 1, 255, cv2.THRESH_BINARY)
+        x_t1_resized = cv2.resize(x_t1_colored, (self.input_width, self.input_height))
+        x_t1_greyscale = cv2.cvtColor(x_t1_resized, cv2.COLOR_BGR2GRAY)
+        ret, x_t1 = cv2.threshold(x_t1_greyscale, 1, 255, cv2.THRESH_BINARY)
+        """
+        import time
+        timestamp = int(time.time())
+        cv2.imwrite("percepts/%d-color.png" % timestamp,
+                    np.rot90(x_t1_colored))
+        cv2.imwrite("percepts/%d-resized.png" % timestamp,
+                    np.rot90(x_t1_resized))
+        cv2.imwrite("percepts/%d-greyscale.png" % timestamp,
+                    np.rot90(x_t1_greyscale))
+        cv2.imwrite("percepts/%d-bandw.png" % timestamp,
+                    np.rot90(x_t1))
+        """
         if not reshape:
             return x_t1
         return np.reshape(x_t1, (80, 80, 1))

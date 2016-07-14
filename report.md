@@ -3,7 +3,9 @@
 
 ## Definition
 ### Project Overview
-For this project we will be creating an agent that can beat a hard coded CPU player in the classic Pong game directly from raw pixels. This is particularly challenging because the agent would have to read the game from raw pixels, and this creates a large amount of states that has been the liability of reinforcement learning.
+For this project we will be creating an agent that can beat a hard-coded CPU player in the classic Pong game directly from raw pixels. This is particularly challenging because the agent would have to read the game from raw pixels, and this creates a large amount of states that has been the liability of reinforcement learning.
+
+Also, this approach to solving the game of pong is better than the hard-coded version, not only for the potential of better performance, but also for the generality of the solution, meaning the same agent with slight modifications would be able to solve other similar problems.
 
 ### Problem Statement
 The following tasks will have to be completed before this project can be called successful.
@@ -28,19 +30,42 @@ This is how the game of King Pong looks like:
 
 The game is a pygame window of 640 by 480. The agent reads the window using OpenCV into an array and then shrinks the image down to a 80 by 80 array. Though the shrinking also causes resolution distortion for a human looking at the images, the agent is able to extrapolate and find patterns that help him generalize into the correct states.
 
-Not only the image is resized but also compress into a grayscale image. Think about it, although the image will read color channels, it is important to reduce the input space as much as possible. One way is to get the greyscale version of the image read.
+Not only the image is resized but also compressed into a grayscale image which values are 0 or 255. And then the values are clipped to 1. So the input image gets converted from a 640x480x3 with values ranging from 0..255, down to a 80x80x1 with values in the range 0..1.
 
-However, you might be wondering, but how does an image tell me the direction in which the ball is going? This creates an additional challenge. To solve this problem we expanded our input array to contain 4 of this images at a time. The sequence of images does indeed tell you the direction and speed in which the ball is traveling.
+Now, think about it, although the image will be read with all color channels, it is important to reduce the input space as much as possible. The first way of doing this, is to reduce the width and height of the images to 80x80, the other way is to get reduce the amount of color channels of the image. Additionally, white and black colors are normalized which might further improve the performance of the Agent.
+
+However, you might be wondering, but how does a single image tell me the direction in which the ball is going? In fact, this creates an additional challenge. To solve this problem we expand our input array to contain 4 of this images at a time. The sequence of images does indeed tell you the direction and speed in which the ball is traveling.
+
+One additional feature that this problem may seem to have is translational invariance. In specific, the ball moving in a specific direction and speed towards one area may seem to be the same as the ball moving on, for example, exactly the opposite speed and direction. Although it might seem worthwhile to implement logic for this specific problem, since the space is pseudo continuous, the translation of the images get too complex. Also, the robustness of Deep Learning is such that our best bet is to just trust the network and not add efforts that are specific to this problem but instead try to generalize even further in order to create a much robust Deep Reinforcement Learning Agent.
 
 
 ### Exploratory Visualization
 
-This is a sequence stack of images. This is what our agent receives as an input space:
+Here is a visual of how the images get processed through the flow of the app.
 
-![alt text][s1]
-![alt text][s2]
-![alt text][s3]
-![alt text][s4]
+First, the image gets captured directly from the screen on 640x480x3 (yeah, this is a color screenshot):
+
+![Color King][color]
+
+Next, the image gets resized to a 80x80x3:
+
+![Reduced King][reduced]
+
+Then, the color channels get reduced to grayscale:
+
+![Grayscale King][grayscale]
+
+Then, the image gets thresholded to black and white values:
+
+![Black and White][binary]
+
+Finally, the new image gets stacked with the previous 3 preprocessed images:
+
+![pp1 king][p1]
+![pp2 king][p2]
+![pp3 king][p3]
+![pp4 king][p4]
+
 
 ### Algorithms and Techniques
 
@@ -68,12 +93,6 @@ python king_pong.py
 ```
 
 I bet the CPU wins.
-
-[king]: ./imgs/king.png "King Pong Game"
-[s1]: ./imgs/frame300000-0.png "First image"
-[s2]: ./imgs/frame300000-1.png "Second image"
-[s3]: ./imgs/frame300000-2.png "Third image"
-[s4]: ./imgs/frame300000-3.png "Fourth image"
 
 ## Methodology
 
@@ -181,3 +200,14 @@ python king_pong.py
 ```
 
 In the future we will add a switch and code to allow a human to play an agent, and other agents to play eachother.
+
+
+[king]: ./imgs/king.png "King Pong Game"
+[color]: ./imgs/1468455523-color.png "Color King"
+[reduced]: ./imgs/1468455523-resized.png "Resized King"
+[greyscale]: ./imgs/1468455523-greyscale.png "Grey King"
+[binary]: ./imgs/1468455523-binary.png "Binary King"
+[p1]: ./imgs/1468455523-binary.png "Frame 1"
+[p2]: ./imgs/1468455522-binary.png "Frame 2"
+[p3]: ./imgs/1468455521-binary.png "Frame 3"
+[p4]: ./imgs/1468455520-binary.png "Frame 4"
