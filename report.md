@@ -233,5 +233,5 @@ Lastly, training time, which with a Nanodegree rolling could be expensive. We wi
 [p4]: ./imgs/1468456952-bandw.png "Frame 4"
 [p5]: ./imgs/1468456951-bandw.png "Frame 5"
 
-[gradient] ./imgs/gradient.gif "Gradient Descent Comparisson"
-[algo] ./imgs/dqn-algo.png "Deep Q-Learning Algorithm"
+[gradient]: ./imgs/gradient.gif "Gradient Descent Comparisson"
+[algo]: ./imgs/dqn-algo.png "Deep Q-Learning Algorithm"
