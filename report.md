@@ -61,11 +61,19 @@ Then, the image gets thresholded to black and white values:
 
 Finally, the new image gets stacked with the previous 3 preprocessed images:
 
+So the stack which originally looked like this:
+
+![pp2 king][p2]
+![pp3 king][p3]
+![pp4 king][p4]
+![pp5 king][p5]
+
+Now, the last image get dropped and the new image get push in front of the array:
+
 ![pp1 king][p1]
 ![pp2 king][p2]
 ![pp3 king][p3]
 ![pp4 king][p4]
-
 
 ### Algorithms and Techniques
 
@@ -203,12 +211,13 @@ In the future we will add a switch and code to allow a human to play an agent, a
 
 
 [king]: ./imgs/king.png "King Pong Game"
-[color]: ./imgs/1468455523-color.png "Color King"
-[reduced]: ./imgs/1468455523-resized.png "Resized King"
-[greyscale]: ./imgs/1468455523-greyscale.png "Grey King"
-[binary]: ./imgs/1468455523-bandw.png "Binary King"
+[color]: ./imgs/1468456955-color.png "Color King"
+[reduced]: ./imgs/1468456955-resized.png "Resized King"
+[greyscale]: ./imgs/1468456955-greyscale.png "Grey King"
+[binary]: ./imgs/1468456955-bandw.png "Binary King"
 
-[p1]: ./imgs/1468455523-bandw.png "Frame 1"
-[p2]: ./imgs/1468455522-bandw.png "Frame 2"
-[p3]: ./imgs/1468455521-bandw.png "Frame 3"
-[p4]: ./imgs/1468455520-bandw.png "Frame 4"
+[p1]: ./imgs/1468456955-bandw.png "Frame 1"
+[p2]: ./imgs/1468456954-bandw.png "Frame 2"
+[p3]: ./imgs/1468456953-bandw.png "Frame 3"
+[p4]: ./imgs/1468456952-bandw.png "Frame 4"
+[p5]: ./imgs/1468456951-bandw.png "Frame 5"
