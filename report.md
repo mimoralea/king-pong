@@ -64,6 +64,7 @@ Finally, the new image gets stacked with the previous 3 preprocessed images:
 So the stack which originally looked like this:
 
 **TIME:**
+
 *Beginning ----------------------------------> Current*
 
 ![pp5 king][p5]
@@ -71,10 +72,10 @@ So the stack which originally looked like this:
 ![pp3 king][p3]
 ![pp2 king][p2]
 
-
-Now, the last image get dropped and the new image get push in front of the array:
+^^^^^ Now, the image on front, which is the oldest image gets dropped.
 
 **TIME:**
+
 *Beginning ----------------------------------> Current*
 
 ![pp4 king][p4]
@@ -82,13 +83,19 @@ Now, the last image get dropped and the new image get push in front of the array
 ![pp2 king][p2]
 ![pp1 king][p1]
 
+And the new image which we just processed gets pushed to the end ^^^^^^.
+
 ### Algorithms and Techniques
 
-For this project we will implement a variant of the Deep Q-Learning algorithm that the Google Deep Mind team release a couple of years ago.
+For this project we will implement a variant of the Deep Q-Learning algorithm that the Google Deep Mind team release a couple of years ago. Now, why wouldn't an algorithm like KNN work for this problem? How about Linear Regression? How about clustering. Well, it is very important to clarify that this problem is neither a Supervised nor a Unsupervised Learning problem. The problem at hand is Reinforcement Learning which is "the third" field of Machine Learning.
 
-For the input space we will implement a Deep Learning Neural Network using TensorFlow. This Deep Convolutional Network will take care of receiving the input image stack and extrapolating to find the best of 3 moves (No action, Up or Down.)
+As I mentioned on the [README](README.md), Deep Reinforcement Learning is the union of two technologies. On one hand, we use Reinforcement Learning techniques to train a policy for the best action to take. In conventional Supervised Learning, we usually start with a dataset, in Reinforcement Learning the agent generates experiences in the for of state, action, reward, new state tuples, which basically tell a story. The world was on this state, I took this action, and I got this reward, and arrived to a new state of the world. So Linear regression would just not be able to work. On the other hand, we use Deep Learning which is Supervised Learning. Although this is a Reinforcement Learning problem, the state space that this work has is huge. Think about how many locations could you place the ball in, how many different directions and speeds could it be traveling to, and how many different places the paddles could be at. So, in this problem, a lot of states represent technically the same issue and those states should be treated in a similar fashion. This is where Deep Learning comes to play.
+
+Therefore, for the input space we will implement a Deep Learning Neural Network using TensorFlow. This Deep Convolutional Network will take care of receiving the input image stack and extrapolating to find the best of 3 moves (No action, Up or Down.)
 
 The first layer of the network will have 80 by 80 by 4 to be able to get the input of 4 images 80 pixels wide by 80 pixel high. Then, we connect this layer with a convolutional layer that reduces the input further to 8 by 8 by 4, and create a densely connected layer of 1600 connections into 512, and finally we connect these to a readout network with 512 inputs and 3 outputs.
+
+
 
 This network cost function will be the square mean error and we will be training the network with an Adam Optimizer which is [known](http://arxiv.org/pdf/1206.5533.pdf) to be an algorithm that converges faster than the generic Gradient Descent.
 
