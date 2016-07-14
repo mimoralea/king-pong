@@ -63,17 +63,24 @@ Finally, the new image gets stacked with the previous 3 preprocessed images:
 
 So the stack which originally looked like this:
 
-![pp2 king][p2]
-![pp3 king][p3]
-![pp4 king][p4]
+**TIME:**
+*Beginning ----------------------------------> Current*
+
 ![pp5 king][p5]
+![pp4 king][p4]
+![pp3 king][p3]
+![pp2 king][p2]
+
 
 Now, the last image get dropped and the new image get push in front of the array:
 
-![pp1 king][p1]
-![pp2 king][p2]
-![pp3 king][p3]
+**TIME:**
+*Beginning ----------------------------------> Current*
+
 ![pp4 king][p4]
+![pp3 king][p3]
+![pp2 king][p2]
+![pp1 king][p1]
 
 ### Algorithms and Techniques
 
