@@ -11,7 +11,7 @@ Also, this approach to solving the game of pong is better than the hard-coded ve
 The following tasks will have to be completed before this project can be called successful.
 
 - First we need to create a Pong simulator.
-- We will need to provided a hard-coded CPU player to use for our base comparisson.
+- We will need to provided a hard-coded CPU player to use for our base comparison.
 - We have to read the raw images from the UI.
 - Additionally, we will have to create a Deep Neural Network that can interpret and extrapolate efficiently for unseen game states.
 - Lastly, we need to implement the deep reinforcement learning agent to be able to be competitive against a hard coded CPU player.
@@ -21,7 +21,7 @@ To be more precise we will have to come up with a rating for the agent. Simply, 
 
 ## Analysis
 
-For this Deep Reinforcement Learning problem there is no dataset per se, but there is, obviously, that which the agent will consume.
+For this Deep Reinforcement Learning problem there is no data set per se, but there is, obviously, that which the agent will consume.
 
 This is how the game of King Pong looks like:
 ![alt text][king]
@@ -30,7 +30,7 @@ This is how the game of King Pong looks like:
 
 The game is a pygame window of 640 by 480. The agent reads the window using OpenCV into an array and then shrinks the image down to a 80 by 80 array. Though the shrinking also causes resolution distortion for a human looking at the images, the agent is able to extrapolate and find patterns that help him generalize into the correct states.
 
-Not only the image is resized but also compressed into a grayscale image which values are 0 or 255. And then the values are clipped to 1. So the input image gets converted from a 640x480x3 with values ranging from 0..255, down to a 80x80x1 with values in the range 0..1.
+Not only the image is re-sized but also compressed into a gray-scale image which values are 0 or 255. And then the values are clipped to 1. So the input image gets converted from a 640x480x3 with values ranging from 0..255, down to a 80x80x1 with values in the range 0..1.
 
 Now, think about it, although the image will be read with all color channels, it is important to reduce the input space as much as possible. The first way of doing this, is to reduce the width and height of the images to 80x80, the other way is to get reduce the amount of color channels of the image. Additionally, white and black colors are normalized which might further improve the performance of the Agent.
 
@@ -101,9 +101,9 @@ This network cost function will be the square mean error and we will be training
 
 ![Gradient Descent Comparisson 2][gradient2]
 
-I highly recomment you read over [this post](http://cs231n.github.io/neural-networks-3/) for a more in-depth comparison of the different Gradient Descent method variations, but allow me to breifly explain what you see on the pictures above. First, you can see how the GD algorithms with Momentum tend to "speed-up" when the surface has high inclination. Though, this creates some overshooting effect, it is vital to speed up the algorithm. This speed-up is due to the inclusion of momentum which standard GD doesn't have and it is main reason why the loss update shows half way the trajectory while the others had already converged.
+I highly recommend you read over [this post](http://cs231n.github.io/neural-networks-3/) for a more in-depth comparison of the different Gradient Descent method variations, but allow me to briefly explain what you see on the pictures above. First, you can see how the GD algorithms with Momentum tend to "speed-up" when the surface has high inclination. Though, this creates some overshooting effect, it is vital to speed up the algorithm. This speed-up is due to the inclusion of momentum which standard GD doesn't have and it is main reason why the loss update shows half way the trajectory while the others had already converged.
 
-For the Reinforcement Learning agent, we will implement a version of the Q Learning algortihm. That is at it's core, it is just the same we implemented in Project 4, but this time, the learning of the agent will have a period in which it only collects information. That is, the agent doesn't train in order to allow it to collect several samples. After approximatelly 50,000 steps, then we allow the agent to change the networks values. Here is a pseudo-code of this algorithm as represented on [this wonderful post](https://www.nervanasys.com/demystifying-deep-reinforcement-learning/?imm_mid=0e2d7e&cmp=em-data-na-na-newsltr_20160420) by [Tambet Matiisen](https://www.nervanasys.com/author/tambet/):
+For the Reinforcement Learning agent, we will implement a version of the Q Learning algorithm. That is at it's core, it is just the same we implemented in Project 4, but this time, the learning of the agent will have a period in which it only collects information. That is, the agent doesn't train in order to allow it to collect several samples. After approximately 50,000 steps, then we allow the agent to change the networks values. Here is a pseudo-code of this algorithm as represented on [this wonderful post](https://www.nervanasys.com/demystifying-deep-reinforcement-learning/?imm_mid=0e2d7e&cmp=em-data-na-na-newsltr_20160420) by [Tambet Matiisen](https://www.nervanasys.com/author/tambet/):
 
 ![Deep Q Learning Algorithm][algo]
 
@@ -157,18 +157,46 @@ In addition to all this pre processing, the scoreboard that can be seen on the v
 
 ### Implementation
 
-The implementation took several weeks, and we found immense help with previous solutions to similar problems, as well as prominent papers, documentation and tutorials on the diverse technologies we had to merge. For the deep neural network the Udacity course and tutorials were helpful, and for the reinforcement learner the Reinforcement Learning class and a previous implementation of a similar agent [FlappyBird](https://github.com/yenchenlin/DeepLearningFlappyBird). Also, for the actual game of Pong we started with an implementation found on the web, but quickly noticed that we had to rewrite the most of it, so it was done.
+Initially we look for a [current Pong implementation](https://www.youtube.com/watch?v=x_tPvtyB1fY) to study how the Pygame framework works. Then we look at some [other sample implementations](http://pygame.org/tags/pong). After grasping the basic Pygame concepts we took the challenge and implemented our own version. Mostly because we wanted to be able to play against the CPU player, as well as programmatically move one frame at a time at the speed the agent needed to learn. So we needed to decouple most of the code and make it functional for different aspects of our problem.
 
-Initially we look for a [current Pong implementation](https://www.youtube.com/watch?v=x_tPvtyB1fY) to study how the Pygame framework works. Then we look at some [other sample implementations](http://pygame.org/tags/pong). After grasping the basic Pygame concepts we took in the challenge of implemented our own version. Mostly because we wanted to be able to play against the CPU player, as well as programatically move one frame at a time at the speed the agent needed to learn.
+Next we learned how to grab and process images from raw pixels to something we could input into our network. The tutorials in the TensorFlow website show very good basic examples of building a Multilayer Convolutional Network, and surprisingly enough, common operations like Weight Initialization and network architectures are very generic and reusable. For this reason, we started with code from their [MNIST for Expert](https://www.tensorflow.org/versions/r0.9/tutorials/mnist/pros/index.html) tutorial. However, we further improved on their sample code and added more utility functions for build weight and biases and convolve relu pools with a single line of code.
+
+At one point we hit a roadblock with using Gradient Descent for this problem. Since the MNIST tutorial referenced above uses a standard Gradient Descent optimizer, for we started to look out for solutions to similar problems, and we came with a codebase that helped us complete the deep learning portion of the agent. [Deep Learning Flappy Bird](https://github.com/yenchenlin/DeepLearningFlappyBird) has a lot of useful code and since they had solve similar problem before, we found about `AdamOptimizer` in there, which is what in the end make a big difference in seeing progress (along with the GTX 980.)
+
+Next, we coded the learning agent separately and attempted to run different learning styles that can be read in literature. For example DynaQ, adds a dreams layer to the agent which basically it tries to generate frames from their current network state. We attempted other methods to probabilistically select frames that are important given the absolute value of the rewards the agent received. We came up with this idea as it is simple a better approach to the mini-batch implementation we currently have. We will discuss this point further later on the "Refinement" section.
+
+As soon as we started coding, we noticed that we needed to build the software using a modular approach. That is, separate the agent, from the game, and further separate the agent from the deep learning code. Some of the samples that you can find on the web, are a single file solution that is hard to read and much harder to modify. Our project is thus separated as follows.
+
+```
+.
+├── agent.py      # agent code with the learning logic. It calls the game module to receive percepts, uses the multicnet module to learn and process percepts.
+├── Dockerfile
+├── imgs/
+├── king_pong.py  # game code handling frames and movements. It also as the environment by giving rewards when agent makes contact with the ball and when it scores.
+├── LICENSE
+├── logs/
+├── multicnet.py  # deep learning network code. Here we build the network, process the images, do the actual learning.
+├── networks/
+├── percepts/
+├── README.md
+└── report.md
+```
+
+This was a much cleaner approach and it allows to more easily improve the code as we see fit. 
+
+Overall, the implementation took several weeks, and we found immense help with previous solutions to similar problems, as well as prominent papers, documentation and tutorials on the diverse technologies. Though very difficult, it was worth the work.
 
 ### Refinement
 
-Several refinements had to be made. First of all, the agent had to train for several days to reach a good performance. Also, having many hyperparameters, we iteratively chose values that made sense for the problem. The AdamOptimizer, for example, when set with a learning rate too large (10-4) will learn suboptimal policies, in the end, a value of 10-10 was selected. Also, for the gamma value 0.90 worked best.
+Several refinements had to be made. First of all, the agent had to train for several days to reach a good performance. Also, having many hyper-parameters, we iteratively chose values that made sense for the problem. Clearly not the best approach, as it would have been to do `GridSearch` for parameter tuning, but the greatest amount of time had already been spent in other areas of the project. The AdamOptimizer, for example, when set with a learning rate too large (10e-4) will learn sub-optimal policies, in the end, a value of 10e-10 was selected for the longest portion of training and then 10e-8 seem to further improve the agent.
 
+The Gamma value we found most useful was 0.90, we tried higher values mostly. The problem with the discount factor being too small is that closer to 0, it would make the agent too short-sighted. So one of the policies that it would quickly learn is to go to one of the corners, either upper or lower and stay there waiting for the ball. The thing is that since the corner is closer to the upper and bottom walls, there is a greater change of the ball ending in one of those places, than somewhere near the middle. Also, since the reward system was set to give 0.1 points are given to impact the ball, and 1.0 to score a point (-1.0 to give a point), intrinsically just hitting the ball is much more valuable to the agent. So, a too low value of gamma would create an unwanted behavior on the agent.
+
+Epsilon was set to start with a 60%. This would give the agent, while in training mode, a high chance of acting randomly yet not totally random. This in really was a convenient method to quickly see how the agent was reacting to the different hyper-parameters. For example, if we started with a 100% chance randomness and the decay was throughout 500,000 iteration, we wouldn't really be able to see how good were the actions the agent was selecting early on.
 
 ## Results
 
-The results of this project are remarkable. Not only the agent was able to beat the benchmark but in fact the agent was able to beat the CPU player on a 100 games matchup consistently. By very little, but still it did win.
+The results of this project are remarkable. Not only the agent was able to beat the benchmark but in fact the agent was able to beat the CPU player on a 100 games match-up consistently. By very little, but still it did win.
 
 ### Model Evaluation and Validation
 
@@ -209,7 +237,7 @@ This can be considered close victories, and they are, but this is also related t
 
 ## Conclusion
 
-This was a very interesting project we got into. Not only we applied a Machine Learning technology, but in fact 2 of the most prominent technologies as of 2016. We proved how hard it is to do Deep Reinforcement Learning, but also how satisfactory it is to get great results. We would be doing more of this kinds of work in the near future.
+This was a very interesting project we got into. Not only we applied a Machine Learning technology, but in fact 2 of the most prominent technologies as of 2016. We proved how hard it is to do Deep Reinforcement Learning, but also how satisfactory it is to get great results. We would be doing more of these kinds of work in the near future.
 
 ### Reflection
 
@@ -217,11 +245,32 @@ Since we used cutting edge technologies, some of the steps we had to take in ord
 
 ### Improvement
 
-We can think of some improvements the agent would benefit from. For example, currently we only sample 60 images from the 50,000 images in the memory queue. This is a rather small portion of what could be sampled. Also, currently there is an equal probability of sample frames that conveyed a reward than frames that were meaningless to the game.
+We can think of some improvements the agent would benefit from. For example, currently we only sample 60 images from the 50,000 images in the memory queue. This is a rather small portion of what could be sampled, even if performed on every timestep.
 
-For a next iteration of this agent, we will be implementing a more complex learning routine that would take into account those features and probabilisticly select frames that are to be of meaning to the agent.
+For a next iteration of this agent, we will be implementing a more complex learning routine that would take into account those features and probabilisticaly select frames that are to be of meaning to the agent. In specific we think about something along these lines:
 
-Lastly, training time, which with a Nanodegree rolling could be expensive. We will, however, further improve the agent and make its latest version available on [GitHub](https://www.github.com/mimoralea/king-pong.git) soon.
+- From the memory batch create a probabilities array for selecting a frame.
+    - The absolute value of the reward would be a good metric. That is our rewards would give weights of (-1, 1, 0.1) -> (1, 1, 0.1)
+    - Then we normalize the array by dividing each value by the sum.
+- Select 100 memories with replacement (Just as humans potentially replay same dreams over and over.)
+- Add padding to each memory.
+    - Randomly select a beginning frame ~50 frames earlier than the selected frame.
+    - Do the same for the last frame; ~50 frames after the selected.
+- Train using these frames sequences.
+
+We believe that this is a much intuitive way of selecting frames to train on. As the current algorithm doesn't prioritize frames and it could take longer to actually select a frame that changes the qvalues on the network due to not having any reward at all. The current implementation would work best if the reward system was much more noisy. For example, lets say we want to reduce the jitter on the agent, so we add a -0.001 reward just giving for moving. Then the random selection of the frames would convey meaning to the agent most of the time. Still though, prioritizing frames seems like a great idea and very straight-forward to implement.
+
+Another improvement that could be easily implemented is allow the agent to learn from a human playing. That would be another simple addition, we just would have to bypass the actions that the agent is taking and use the key presses the user sends. Perhaps, even just enabling the actions to be overridden by the human player at any time. We just would have to make sure we use the actions sent by the user not only for controlling the game, but also for storing it on the memory queue.
+
+
+## References
+
+Other references are spread out throughout the project, but these were particularly useful.
+
+- [Deep Learning Flappy](https://github.com/yenchenlin/DeepLearningFlappyBird)
+- [Deep Learning Tutorial](https://www.nervanasys.com/demystifying-deep-reinforcement-learning/)
+- [Pong PyGame](https://www.youtube.com/watch?v=x_tPvtyB1fY)
+- [Udacity's Reinforcement Learning Course](https://www.udacity.com/course/reinforcement-learning--ud600)
 
 
 
@@ -237,6 +286,6 @@ Lastly, training time, which with a Nanodegree rolling could be expensive. We wi
 [p4]: ./imgs/1468456952-bandw.png "Frame 4"
 [p5]: ./imgs/1468456951-bandw.png "Frame 5"
 
-[gradient]: ./imgs/gradient.gif "Gradient Descent Comparisson"
-[gradient2]: ./imgs/gradient2.gif "Gradient Descent Comparisson 2"
+[gradient]: ./imgs/gradient.gif "Gradient Descent Comparison"
+[gradient2]: ./imgs/gradient2.gif "Gradient Descent Comparison 2"
 [algo]: ./imgs/dqn-algo.png "Deep Q-Learning Algorithm"
