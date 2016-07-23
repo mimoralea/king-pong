@@ -8,6 +8,8 @@ For this project we will be creating an agent that can beat a hard-coded CPU pla
 Also, this approach to solving the game of pong is better than the hard-coded version, not only for the potential of better performance, but also for the generality of the solution, meaning the same agent with slight modifications would be able to solve other similar problems.
 
 ### Problem Statement
+The tasks for this project are very challenging. First we need to create a Pong game simulator, then we need to apply Computer Vision to get the raw pixels from the game state and preprocess the images, Deep Learning to reduce the state space of the problem, and Reinforcement Learning to allow our agent to learn an optimal policy from scratch.
+
 The following tasks will have to be completed before this project can be called successful.
 
 - First we need to create a Pong simulator.
@@ -18,6 +20,8 @@ The following tasks will have to be completed before this project can be called 
 
 ### Metrics
 To be more precise we will have to come up with a rating for the agent. Simply, we will match the fully trained player against the hard-coded CPU, stopping the match when **the first player reaches 100 games**. Each game will be 3 points. That is, the first to score 3 points wins a game, the first to win 100 games is the **King**. Our goal is to get to the 100 points first, but hopefully we can keep the CPU player under 70 points.
+
+Note that 100 games are not including training games. The agent has to train for millions of games before it learn a robust policy. The 100 games metric is only used to test a fully trained agent.
 
 ## Analysis
 
@@ -85,6 +89,8 @@ So the stack which originally looked like this:
 
 And the new image which we just processed gets pushed to the end ^^^^^^.
 
+This is important because we want the agent to always have the last 4 images in the correct sequence. It should not matter whether the images get pushed into the beginning or the end only if they always get inserted into the data structure in the same order. If they are not, the agent would get confused with the direction and/or magnitude the ball is traveling.
+
 ### Algorithms and Techniques
 
 For this project we will implement a variant of the Deep Q-Learning algorithm that the Google Deep Mind team release a couple of years ago. Now, why wouldn't an algorithm like KNN work for this problem? How about Linear Regression? How about clustering. Well, it is very important to clarify that this problem is neither a Supervised nor a Unsupervised Learning problem. The problem at hand is Reinforcement Learning which is "the third" field of Machine Learning.
@@ -127,7 +133,7 @@ There were several steps in order to make this work. The Deep Network was a chal
 
 ### Data Preprocessing
 
-As discussed above, the data wasn't preprocessed once, but the implementation includes a preprocessing routine that does the job continuously. Again, from a 640x480x3 read of the screen down to a stack of 4 x 80x80 grayscale images. Here is a code snippet of how this is done:
+As discussed above, the data wasn't preprocessed once, but the implementation includes a preprocessing routine that does the job continuously. Again, from a single image 640x480x3 (w,h,channels) read of the screen down to a stack of 4 grayscale images of 80x80x1. Here is a code snippet of how this is done:
 
 To get the image array from Pygame we use:
 
@@ -140,9 +146,9 @@ The [`get_surface()`](http://www.pygame.org/docs/ref/display.html#pygame.display
 After reading these values into a 3d array we preprocess the image to shrink it down to 80x80x3, then collapse the 3 channels to 1, finally clipping the values to 0 or 1:
 
 ```python
-resized_img = cv2.resize(color_img, (80, 80))
-greyscale_img = cv2.cvtColor(resized_img, cv2.COLOR_BGR2GRAY)
-_, binary_img = cv2.threshold(greyscale_img, 1, 255, cv2.THRESH_BINARY)
+resized_img = cv2.resize(color_img, (80, 80)) # resize down only
+greyscale_img = cv2.cvtColor(resized_img, cv2.COLOR_BGR2GRAY) # reduce from 3 to 1 channel
+_, binary_img = cv2.threshold(greyscale_img, 1, 255, cv2.THRESH_BINARY) # clip the 'grayscale' to black or white
 ```
 
 The last step, we stack up the new image to the input stack which we use to train and query our Deep Network, this code shows how that gets done:
@@ -225,7 +231,7 @@ The tournament against the human player was limited to 3 games because on a 10 g
 
 ### Justification
 
-We argue the agent is a very solid solution to the pong game. Though, we weren't able to limit the CPU player to our desired 70 games on the "first to 100" tournament, the agent was able to win 100 out of 189. Also, when playing against the CPU, the average human player gets less than 50% the games against the CPU on a 10 games match. On the other hand, the agent often wins the most amount of games.
+We argue the agent is a very solid solution to the pong game. Though, we weren't able to limit the CPU player to our desired 70 games on the "first to 100" tournament, the fully-trained agent was able to win 100 out of 189. Also, when playing against the CPU, the average human player gets less than 50% the games against the CPU on a 10 games match. On the other hand, the agent often wins the most amount of games.
 
 To show numbers we ran 3 times 100 games of 3 points, the results were as follows:
 
@@ -233,9 +239,15 @@ To show numbers we ran 3 times 100 games of 3 points, the results were as follow
 - Second iteration Agent won 100 to 93
 - Third iteration Agent won 100 to 94
 
-This can be considered close victories, and they are, but this is also related to the training time. Remember, this is an agent that got his first game after the 5,000,000th timestep. The improvement would just take some extra training time on the NVIDIA GTX 980. And it is in fact training as I write these lines.
+This can be considered close victories, and they are, but this is also related to the training time. Remember, this is an agent that got his first game after the 5,000,000th training timestep. The improvement would just take some extra training time on the NVIDIA GTX 980. And it is in fact training as I write these lines.
 
 ## Conclusion
+
+Here is a gif of the fully-trained agent playing:
+
+![King Pong][kingif]
+
+On this project we explored how to train an agent play the game of Pong from raw pixels.
 
 This was a very interesting project we got into. Not only we applied a Machine Learning technology, but in fact 2 of the most prominent technologies as of 2016. We proved how hard it is to do Deep Reinforcement Learning, but also how satisfactory it is to get great results. We would be doing more of these kinds of work in the near future.
 
@@ -244,6 +256,20 @@ This was a very interesting project we got into. Not only we applied a Machine L
 Since we used cutting edge technologies, some of the steps we had to take in order to make this project work were completely in the dark. We had very little guidance that if we had picked some other technology, it would had been much easier to follow examples. For example, deep learning is a very new technology, with the emerging tools such as TensorFlow there is enough material in how to process images, but little in how to process a series of images as to model the motion of the ball. This challenge was resolved when reading [very useful posts](https://www.nervanasys.com/demystifying-deep-reinforcement-learning/?imm_mid=0e2d7e&cmp=em-data-na-na-newsltr_20160420) about deep reinforcement learning, but the practical examples were not the norm. 
 
 ### Improvement
+
+Short GIFs of the moments when the agent loses:
+
+![Loss 1][o1]
+![Loss 2][o2]
+![Loss 3][o3]
+![Loss 4][o4]
+![Loss 5][o5]
+![Loss 6][o6]
+
+Although completely satisfied with the results, the agent can definitely be improved. Here are some of the weak spots of the agent:
+
+    - It doesn't have a large visibility of the ball trajectory when updating q values. For example, the agent uses only 4 frames to update q values. The problem with this is that if it had more frames, the values would be able to propagate further. Imagine you being able to only see the last 4 frames of the ball, you anticipation to the plays are much more delayed. The same happens with the agent. Though, this is expensive and it might not improve performance greatly. Though, more explaration is required.
+    - Discount factor could be improved. As we discussed before, some of the hyper parameters were selected on a trial and error way. One good improvement would be to use some randomized algorithms and pick the best parameters.
 
 We can think of some improvements the agent would benefit from. For example, currently we only sample 60 images from the 50,000 images in the memory queue. This is a rather small portion of what could be sampled, even if performed on every timestep.
 
@@ -273,7 +299,7 @@ Other references are spread out throughout the project, but these were particula
 - [Udacity's Reinforcement Learning Course](https://www.udacity.com/course/reinforcement-learning--ud600)
 
 
-
+[kingif]: ./imgs/king.gif "King Pong Game"
 [king]: ./imgs/king.png "King Pong Game"
 [color]: ./imgs/1468456955-color.png "Color King"
 [reduced]: ./imgs/1468456955-resized.png "Resized King"
@@ -285,6 +311,13 @@ Other references are spread out throughout the project, but these were particula
 [p3]: ./imgs/1468456953-bandw.png "Frame 3"
 [p4]: ./imgs/1468456952-bandw.png "Frame 4"
 [p5]: ./imgs/1468456951-bandw.png "Frame 5"
+
+[o1]: ./imgs/o1.gif "Loss 1"
+[o2]: ./imgs/o2.gif "Loss 2"
+[o3]: ./imgs/o3.gif "Loss 3"
+[o4]: ./imgs/o4.gif "Loss 4"
+[o5]: ./imgs/o5.gif "Loss 5"
+[o6]: ./imgs/o6.gif "Loss 6"
 
 [gradient]: ./imgs/gradient.gif "Gradient Descent Comparison"
 [gradient2]: ./imgs/gradient2.gif "Gradient Descent Comparison 2"

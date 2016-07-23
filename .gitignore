@@ -89,5 +89,6 @@ ENV/
 .ropeproject
 
 # Emacs
-\#*\#
 *~
+\#*\#
+.\#*
