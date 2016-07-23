@@ -247,7 +247,9 @@ Here is a gif of the fully-trained agent playing:
 
 ![King Pong][kingif]
 
-On this project we explored how to train an agent play the game of Pong from raw pixels.
+On this project we explored how to train an agent play the game of Pong from raw pixels. For this we use many different cutting edge technologies. First, we created a game simulator of the game of pong. This was challenging due to the world dynamics, for example, detecting ball collisions. Then we had to use Computer Vision techniques to read the raw pixels from the screen, resize and remove channels from the percepts. Additionally, we had to implement Deep Learning to reduce the state space of the problem into something manageable. And finally implement Reinforcement Learning to allow an agent that only knows about states, actions rewards and new states into a competitive Pong player.
+
+Along the way we found many challenges. The most difficult part of the project is to use all of these technologies to work well. To find a solution to this problem we designed a modular implementation on the code, in which the game simulator is separate from the agent and from the neural network code along with the computer vision utility functions. This not only made the project possible, but also the code reusable, as it would be much simpler to use the same agent code to solve other games. Also, it would be simple to remove the TensorFlow dependencies and implement Deep Learning using something else like Theano, or Caffe, Torch, etc.
 
 This was a very interesting project we got into. Not only we applied a Machine Learning technology, but in fact 2 of the most prominent technologies as of 2016. We proved how hard it is to do Deep Reinforcement Learning, but also how satisfactory it is to get great results. We would be doing more of these kinds of work in the near future.
 
@@ -268,8 +270,8 @@ Short GIFs of the moments when the agent loses:
 
 Although completely satisfied with the results, the agent can definitely be improved. Here are some of the weak spots of the agent:
 
-    - It doesn't have a large visibility of the ball trajectory when updating q values. For example, the agent uses only 4 frames to update q values. The problem with this is that if it had more frames, the values would be able to propagate further. Imagine you being able to only see the last 4 frames of the ball, you anticipation to the plays are much more delayed. The same happens with the agent. Though, this is expensive and it might not improve performance greatly. Though, more explaration is required.
-    - Discount factor could be improved. As we discussed before, some of the hyper parameters were selected on a trial and error way. One good improvement would be to use some randomized algorithms and pick the best parameters.
+- It doesn't have a large visibility of the ball trajectory when updating q values. For example, the agent uses only 4 frames to update q values. The problem with this is that if it had more frames, the values would be able to propagate further. Imagine you being able to only see the last 4 frames of the ball, you anticipation to the plays are much more delayed. The same happens with the agent. Though, this is expensive and it might not improve performance greatly. Though, more explaration is required.
+- Discount factor could be improved. As we discussed before, some of the hyper parameters were selected on a trial and error way. One good improvement would be to use some randomized algorithms and pick the best parameters.
 
 We can think of some improvements the agent would benefit from. For example, currently we only sample 60 images from the 50,000 images in the memory queue. This is a rather small portion of what could be sampled, even if performed on every timestep.
 
