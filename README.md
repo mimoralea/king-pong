@@ -57,6 +57,8 @@ This command will download the container with all of the dependencies installed.
 
 #### To build execute:
 
+**NOTE:** You don't need this command if you pull the container (above).
+
 ```bash
 docker build -t mimoralea/king-pong:v1 .
 ```
@@ -79,6 +81,7 @@ This command redirects the X11 session to your local computer. You need this so 
 If you used the Docker method you need to get into the `king-pong` directory first. `cd king-pong`. If you installed the pages locally, the `agent.py` file should be in your current directory. To run the application run from the project's root directory:
 
 ```bash
+cd /king-pong
 python agent.py -vv -g 1 -m 3
 ```
 

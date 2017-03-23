@@ -8,13 +8,13 @@ class MultilayerConvolutionalNetwork:
     that will be used by the agent to learn
     and extrapolate the state space
     """
-    def __init__(self, input_width, input_height, nimages, noutputs):
+    def __init__(self, input_width, input_height, nimages, nchannels):
         self.session = tf.InteractiveSession()
         self.input_width = input_width
         self.input_height = input_height
         self.nimages = nimages
-        self.noutputs = noutputs
-        self.a = tf.placeholder("float", [None, self.noutputs])
+        self.nchannels = nchannels
+        self.a = tf.placeholder("float", [None, self.nchannels])
         self.y = tf.placeholder("float", [None])
         self.input_image, self.y_conv, self.h_fc1, self.train_step = self.build_network()
         self.session.run(tf.initialize_all_variables())
@@ -89,7 +89,7 @@ class MultilayerConvolutionalNetwork:
         h_fc1 = tf.nn.relu(tf.matmul(h_conv3_flat, W_fc1) + b_fc1)
 
         # finally add the readout layer
-        W_fc2, b_fc2 = self.build_weights_biases([512, self.noutputs])
+        W_fc2, b_fc2 = self.build_weights_biases([512, self.nchannels])
         readout = tf.matmul(h_fc1, W_fc2) + b_fc2
 
         readout_action = tf.reduce_sum(tf.mul(readout, self.a), reduction_indices=1)
@@ -98,14 +98,14 @@ class MultilayerConvolutionalNetwork:
 
         return input_image, readout, h_fc1, train_step
 
-    def train(self, value_batch, action_batch, next_state_batch):
+    def train(self, value_batch, action_batch, state_batch):
         """
         Does the actual training step
         """
         self.train_step.run(feed_dict = {
             self.y : value_batch,
             self.a : action_batch,
-            self.input_image : next_state_batch
+            self.input_image : state_batch
         })
 
     def save_variables(self, a_file, h_file, stack):
